@@ -419,3 +419,9 @@ End_For_Each
 /Iteration_Parameter_Name=INDEX
 ;
 
+File_Save_As
+/FILE_NAME=C:\Users\Mac Prible\Box\Research\schreiber-moissenet\cmo_files\&::subjIDX&.cmo
+! /SET_PROMPT=Save CMO file as
+! /SAVE_EMBEDDED_GRAPHICS=FALSE
+;
+
