@@ -55,7 +55,7 @@ When all the chips land I will hopefully have something that makes sense and the
 Here's the beginning of a task item list:
 
 
-1. Get your github login working: you were running off an old validation system that has been discontinued. You will want to be running this through a backed up VC. Not sure if my current setup is really working.
+1. Get your github login working: you were running off an old validation system that has been discontinued. You will want to be running this through a backed up VC. Not sure if my current setup is really working. Ok. Looks like the push to master is working. Very good then. One more thing out of the way.
 
 2. Create a pipeline with a sample participant that calculates the gait speed of a given trial.
 
