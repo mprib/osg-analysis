@@ -46,6 +46,18 @@ I'm sitting here and wondering why this kind of data doesn't seem to have been r
 
 In the end, the process of pulling everything together is going to be a bit of a mess. But here we are. 
 
+
+# Pipeline
+
+The visual 3d pipeline that is used to create the output being processed here is stored in osg-analysis\pipelines\pipeline_generate_trunk_angles.v3s
+
+The output is stored in osg-analysis\pipelines\pipe-out. It talks about 10 minutes to run (~10 seconds per file, 50 files)
+
+
+# Pipeline Consolidation
+
+Here I will try 
+
 # Initial Plan to Proceed
 
 I will say at the outset that I have concerns about the file structure that I have set up here. The way things either are or are not nested seems like it will create issues down the line. I'm going to give myself permission right now to not worry about that, to just get deep into things and change stuff on the fly. 
@@ -55,14 +67,6 @@ When all the chips land I will hopefully have something that makes sense and the
 Here's the beginning of a task item list:
 
 
-1. Get your github login working: you were running off an old validation system that has been discontinued. You will want to be running this through a backed up VC. Not sure if my current setup is really working. Ok. Looks like the push to master is working. Very good then. One more thing out of the way.
+1. Create a new version of 2_ConsolidateTextFileOutput.R that will consolidate this output.
 
-2. Create a pipeline with a sample participant that calculates the gait speed of a given trial.
-
-3. Add to that pipeline the range of motion and midpoints....make sure that you are not capturing partial gait cycles which will throw off the range.
-
-4. Create a new version of 2_ConsolidateTextFileOutput.R that will consolidate this output.
-
-5. Dig out the AutoHotKey script to create the output that you want. Time how long it takes for this to run so that you can make better plans about this going forward.
-
-6. Start the actual analysis in a new document.
+2. Start the actual analysis in a new document.
