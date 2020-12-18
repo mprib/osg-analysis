@@ -48,7 +48,7 @@ get_origin <- function(txt_file) {
 
 library(fs)
 
-files <-as.tibble(fs::dir_ls("output_summary"))
+files <-as.tibble(dir_ls("pipelines/pipe_out"))
 
 names(files)[1] <- "OutputFile"
 

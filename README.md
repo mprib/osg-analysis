@@ -53,10 +53,11 @@ The visual 3d pipeline that is used to create the output being processed here is
 
 The output is stored in osg-analysis\pipelines\pipe-out. It talks about 10 minutes to run (~10 seconds per file, 50 files)
 
+The autohotkey script used to process all of the trials is RunPipelineOnAll.ahk within the schreiber-moissenet/data
 
 # Pipeline Consolidation
 
-Here I will try 
+Here I will try to adapt the pr
 
 # Initial Plan to Proceed
 
