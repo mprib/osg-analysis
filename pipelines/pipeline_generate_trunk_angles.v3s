@@ -1,30 +1,3 @@
-! This is to fix the alignment of the thorax so that flexion/extension gets measured accurately
-Set_Segment_Properties
-/CALIBRATION_FILE=
-/SEGMENT_NAME=Thorax/Ab
-! /KINEMATIC_ONLY=
-! /MASS=
-! /CG_FROM_PROX_AXIAL=
-! /CG_FROM_PROX_ML=
-! /CG_FROM_PROX_AP=
-! /INERTIA_XX=
-! /INERTIA_YY=
-! /INERTIA_ZZ=
-/AP_DIRECTION=-Y
-/AXIAL_DIRECTION=-Z
-! /MODEL_FILE=
-! /MATERIAL_FILE=
-! /GRAPHICS_ROT_X=
-! /GRAPHICS_ROT_Y=
-! /GRAPHICS_ROT_Z=
-! /GRAPHICS_SCALE_X=
-! /GRAPHICS_SCALE_Y=
-! /GRAPHICS_SCALE_Z=
-! /GRAPHICS_TRANSLATE_X=
-! /GRAPHICS_TRANSLATE_Y=
-! /GRAPHICS_TRANSLATE_Z=
-;
-
 !/ low pass filter the analog channels. Take all inputs from analog original EXCEPT Mz2 and Mz1(processed)
 
 Lowpass_Filter
@@ -49,41 +22,6 @@ Multiply_Signals_By_Constant
 ! /RESULT_FOLDER=PROCESSED
 ! /SIGNAL_COMPONENTS=
 /CONSTANT=9.8
-;
-
-Event_Delete
-/EVENT_NAME=LMST
-! /EVENT_SEQUENCE=
-! /EXCLUDE_EVENTS=
-! /TIME=
-;
-
-! Flag midstance based on 50% rule
-Event_Between
-/NEW_EVENT_NAME=LMST
-! /RANGE_INSTANCE=0
-/EVENT_SEQUENCE=RTO+RHS
-/EXCLUDE_EVENTS=LHS
-/FRAME_OFFSET=
-! /TIME_OFFSET=
-/PERCENT_OFFSET=50
-;
-
-Event_Delete
-/EVENT_NAME=RMST
-! /EVENT_SEQUENCE=
-! /EXCLUDE_EVENTS=
-! /TIME=
-;
-
-Event_Between
-/NEW_EVENT_NAME=RMST
-! /RANGE_INSTANCE=0
-/EVENT_SEQUENCE=LTO+LHS
-/EXCLUDE_EVENTS=RHS
-/FRAME_OFFSET=
-! /TIME_OFFSET=
-/PERCENT_OFFSET=50
 ;
 
 Compute_Model_Based_Data
@@ -162,20 +100,6 @@ Lowpass_Filter
 ! /NUM_EXTRAPOLATED=0
 ! /TOTAL_BUFFER_SIZE=6
 ! /NUM_BIDIRECTIONAL_PASSES=1
-;
-
-Evaluate_Expression
-/EXPRESSION=METRIC::PROCESSED::LHLB_LHS-METRIC::PROCESSED::RHLB_LHS
-/RESULT_NAME=LStep_Distance
-/RESULT_TYPE=METRIC
-! /RESULT_FOLDER=PROCESSED
-;
-
-Evaluate_Expression
-/EXPRESSION=METRIC::PROCESSED::RHLB_RHS-METRIC::PROCESSED::LHLB_RHS
-/RESULT_NAME=RStep_Distance
-/RESULT_TYPE=METRIC
-! /RESULT_FOLDER=PROCESSED
 ;
 
 Metric_Signal_Value_At_Event
@@ -394,7 +318,7 @@ Select_Active_File
 Export_Data_To_Ascii_File
 /SIGNAL_TYPES=METRIC
 /SIGNAL_FOLDER=PROCESSED
-/SIGNAL_NAMES=LStep_Distance+RStep_Distance+Min_R_Force+Min_L_ThoraxOnPelvis+Max_L_PelvisRelativeToLab+Min_L_PelvisRelativeToLab+Max_L_ThoraxRelativeToLab+Min_L_ThoraxRelativeToLab+Max_R_ThoraxOnPelvis+Min_R_ThoraxOnPelvis+Max_R_PelvisRelativeToLab+Min_R_PelvisRelativeToLab+Max_R_ThoraxRelativeToLab+Min_R_ThoraxRelativeToLab
+/SIGNAL_NAMES=Min_R_Force+Min_L_ThoraxOnPelvis+Max_L_PelvisRelativeToLab+Min_L_PelvisRelativeToLab+Max_L_ThoraxRelativeToLab+Min_L_ThoraxRelativeToLab+Max_R_ThoraxOnPelvis+Min_R_ThoraxOnPelvis+Max_R_PelvisRelativeToLab+Min_R_PelvisRelativeToLab+Max_R_ThoraxRelativeToLab+Min_R_ThoraxRelativeToLab+Speed
 /FILE_NAME=::FOLDER&::NEW_INDEX
 ! /SIGNAL_COMPONENTS=
 /COMPONENT_SEQUENCE=ALL

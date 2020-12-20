@@ -44,6 +44,10 @@ get_origin <- function(txt_file) {
 }
 
 
+is_all_numeric <- function(x) {
+  !any(is.na(suppressWarnings(as.numeric(na.omit(x))))) & is.character(x)
+}
+
 # test_txt <- txt_to_df(txt_file_name)
 
 library(fs)
@@ -52,44 +56,27 @@ files <-as.tibble(dir_ls("pipelines/pipe_out"))
 
 names(files)[1] <- "OutputFile"
 
-files <- files %>% 
+df_trunk_speed <- files %>% 
   mutate(df_version = map(OutputFile,txt_to_df)) %>%  # why don't I use the map_df function here? That didn't seem to work...
   unnest(df_version)
 
-files <- files %>% select(-OutputFile)
 
-files_long <- files %>% 
-  pivot_longer(-Origin) %>% 
-  rename(Variable = name) %>% 
-  mutate(dim = str_sub(Variable,-1),
-         side = case_when(str_sub(Variable,1,1) == "R" ~ "Right",
-                          str_sub(Variable,1,1) == "L" ~ "Left",
-                          TRUE ~ NA_character_),
-         Measure = case_when(str_detect(Variable, "HIP") ~ "Hip_Moment",
-                             str_detect(Variable, "KNEE") ~ "Knee_Moment",
-                             str_detect(Variable, "VGRF") ~ "VGRF",
-                             str_detect(Variable, "Speed") ~ "Speed",
-                             TRUE ~ NA_character_),
-         Measure_Type = case_when(str_detect(Variable, "Max") ~ "Max",
-                                  str_detect(Variable, "Min") ~ "Min",
-                                  TRUE ~ NA_character_)) %>% 
-  separate(Origin, c("Subject", "Condition", "Trial"), "_")  %>% 
-  mutate(Trial = str_sub(Trial,2,2)) # %>% # Need to clean up the .c3d that's hanging around
+df_trunk_speed <- df_trunk_speed %>% select(-OutputFile)
 
-files_long <- files_long %>% 
-  mutate(Variable_final = paste(Measure, Measure_Type, dim, sep = "_")) %>% 
-  select(-c(Variable, dim, Measure, Measure_Type))
+df_trunk_speed <- df_trunk_speed %>% 
+  separate(Origin, into = c("Participant", "Condition", "Trial"), extra = "drop") %>%
+  filter(Participant != "2014051") %>% 
+  mutate_if(is_all_numeric,as.numeric) %>% 
+  mutate(Trunk_Rot_Range = Max_R_ThoraxOnPelvis_Z - Min_R_ThoraxOnPelvis_Z,
+         Trunk_LF_Range = Max_R_ThoraxOnPelvis_Y - Min_R_ThoraxOnPelvis_Y) %>% 
+  rename(Speed = Speed_X) %>% 
+  select(Participant,
+         Condition,
+         Trial,
+         Speed,
+         Trunk_Rot_Range,
+         Trunk_LF_Range,
+         everything())
 
-files_wide <- files_long %>% pivot_wider(names_from = "Variable_final") %>% filter(!is.na(side))
+df_trunk_speed %>% write_csv("trunk_speed_output.csv")
 
-
-files_wide %>% write_csv("Consolidated_v3d_Output.csv")
-files_wide <- read_csv("Consolidated_v3d_Output.csv")
-
-files_wide <- files_wide %>% 
-  mutate(Hip_Abduction_Max = if_else(side == "Left", -1 * Hip_Moment_Min_X, Hip_Moment_Max_X),
-         Knee_Extension_Max = Knee_Moment_Max_Y,
-         VGRF_Max = VGRF_Max_Z) %>% 
-  select(Subject, Condition, Trial, side, Hip_Abduction_Max, Knee_Extension_Max, VGRF_Max, everything())
-
-files_wide %>% write_csv("Consolidated_v3d_Output.csv")

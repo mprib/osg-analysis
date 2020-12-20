@@ -55,11 +55,22 @@ The output is stored in osg-analysis\pipelines\pipe-out. It talks about 10 minut
 
 The autohotkey script used to process all of the trials is RunPipelineOnAll.ahk within the schreiber-moissenet/data
 
-# Pipeline Consolidation
+# Pipeline Output Consolidation
 
-Here I will try to adapt the pr
+This was done with 3_
 
-# Initial Plan to Proceed
+The previous consolidation file (which I believe had been used for the project that Hao was working on related to hip torque or something like that)
+
+It appears that there are issues with participant 2014051. It looks like the marker set was not applied in keeping with the standard of the rest of the participants. I feel comfortable then removing this participant from the dataset. We are down to 49.
+
+
+# Analysis
+
+4_
+
+This is where I start to actually look at the data...
+
+# Plan to Proceed
 
 I will say at the outset that I have concerns about the file structure that I have set up here. The way things either are or are not nested seems like it will create issues down the line. I'm going to give myself permission right now to not worry about that, to just get deep into things and change stuff on the fly. 
 

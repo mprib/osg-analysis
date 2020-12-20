@@ -1,0 +1,130 @@
+---
+title: "Trunk Vs. Speed"
+author: "Mac Prible"
+date: "12/18/2020"
+output: html_document
+---
+
+
+# Import the data
+
+```{r}
+library(tidyverse)
+
+df_trunk_speed <- read_csv("trunk_speed_output.csv")
+
+```
+
+```{r}
+
+df_trunk_speed_by_participant <-  df_trunk_speed %>% 
+  group_by(Participant, Condition) %>% 
+  select(Condition,
+         Speed,
+         Trunk_Rot_Range,
+         Trunk_LF_Range) %>% 
+  filter(!is.na(Speed)) %>% # note you need to return to this and sort out why a subject's speed is coming up NA...likely a problem with the COM calculation. 
+  summarize(Part_Mean_Speed = mean(Speed),
+            Part_Mean_Rot = mean(Trunk_Rot_Range),
+            Part_Mean_LF = mean(Trunk_LF_Range))
+
+
+```
+
+```{r}
+
+library(ggplot2)
+library(ggpubr)
+
+
+
+
+condition_contrast <- list(c("C1", "C2"), c("C2", "C3"), c("C3", "C4"), c("C4", "C5"))
+
+# let's just compare the below .8 to above .8 groups...
+condition_contrast <- list( c("C2", "C3"))
+
+df_trunk_speed_by_participant %>% 
+  pivot_longer(cols = starts_with("Part_"), names_to = "Variable", values_to = "value") %>% 
+  filter(Variable != "Part_Mean_Speed") %>% 
+  ggplot(aes(x = Condition, y = value)) + 
+  geom_boxplot() +
+  facet_grid(rows = vars(Variable))+ 
+  stat_compare_means(comparison = condition_contrast)
+  
+  
+
+```
+
+```{r}
+
+library(readxl)
+library(here)
+
+df_metrics <- read_xlsx(here("SubjectAnthropometrics.xlsx"))
+
+df_metrics <- df_metrics %>% 
+  mutate(mean_leg_length = (R_Leg + L_Leg)/2) %>% 
+  left_join(df_trunk_speed_by_participant, by = c("SubjectID" = "Participant"))
+
+df_metrics <- df_metrics %>% 
+  mutate(Part_Speed_Norm = Part_Mean_Speed / mean_leg_length)
+
+df_metrics %>% 
+  pivot_longer(cols = c("Part_Mean_Rot", "Part_Mean_LF"), names_to = "Variable", values_to = "value") %>%
+  # filter(Condition == "C4") %>%
+  # filter(Part_Mean_Speed > 0.4,
+  #        Part_Mean_Speed < 1.2) %>% 
+  ggplot(aes(x = Part_Mean_Speed, y = value, color = Condition))+
+    geom_point()+
+    stat_cor()+
+    facet_grid(rows = vars(Variable))
+
+
+df_metrics %>% 
+  pivot_longer(cols = c("Part_Mean_Rot", "Part_Mean_LF"), names_to = "Variable", values_to = "value") %>%
+  filter(Condition == "C5") %>% 
+  ggplot(aes(x = Gender, y = value)) + 
+    geom_boxplot() +
+    facet_grid(rows = vars(Variable))+
+    stat_compare_means(method = "t.test")
+
+condition_contrast <- list(c("C1", "C2"), c("C2", "C3"), c("C3", "C4"), c("C4", "C5"))
+
+df_metrics %>% 
+  pivot_longer(cols = c("Part_Mean_Rot", "Part_Mean_LF"), names_to = "Variable", values_to = "value") %>%
+  filter(Condition != "C5",
+         !is.na(Condition)) %>%
+  ggplot(aes(x = Gender, y = value)) + 
+    geom_boxplot() +
+    facet_grid(rows = vars(Variable), cols = vars(Condition))+
+    stat_compare_means(method = "t.test")
+
+condition_contrast <- list(c("C1", "C2"), c("C2", "C3"), c("C1", "C3"))
+
+df_metrics %>% 
+  pivot_longer(cols = c("Part_Mean_Rot", "Part_Mean_LF"), names_to = "Variable", values_to = "value") %>%
+  filter(Condition != "C5",
+         Condition != "C4",
+         !is.na(Condition)) %>%
+  ggplot(aes(x = Condition, y = value)) + 
+    geom_boxplot() +
+    # facet_grid(rows = vars(Variable), cols = vars(Gender))+
+    facet_grid(rows = vars(Variable))+
+    stat_compare_means(comparison = condition_contrast)
+
+
+condition_contrast <- list(c("C4", "C5"))
+
+df_metrics %>% 
+  pivot_longer(cols = c("Part_Mean_Rot", "Part_Mean_LF"), names_to = "Variable", values_to = "value") %>%
+  filter(Condition == "C5" |
+         Condition == "C4",
+         !is.na(Condition)) %>%
+  ggplot(aes(x = Condition, y = value)) + 
+    geom_boxplot() +
+    # facet_grid(rows = vars(Variable), cols = vars(Gender))+
+    facet_grid(rows = vars(Variable))+
+    stat_compare_means(comparison = condition_contrast)
+```
+
